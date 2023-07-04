@@ -8,14 +8,13 @@ inputs:
     required: false
     default: ""
 outputs:
-  release-created:
-    description: "Whether the release for given tag has been created"
-    value: ${{ steps.get-latest-release.outputs.release-created }}
+  release-exists:
+    description: Whether the release for given tag exists
+    value: ${{ steps.check-if-release-exists.outputs.release-exists }}
 
-# TODO
 branding:
-  icon: 'image'
-  color: 'red'
+  icon: 'box'
+  color: 'purple'
 
 runs:
   using: 'composite'
@@ -24,8 +23,8 @@ runs:
       id: branch-names
       uses: tj-actions/branch-names@v6
 
-    - name: Get latest release 🚀
-      id: get-latest-release
+    - name: Check if release exists 🚀
+      id: check-if-release-exists
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
@@ -38,9 +37,9 @@ runs:
         set +e
         if [[ "$(gh release view $RELEASE_TAG 2>&1)" == "release not found" ]]; then
           echo "Release not found."
-          echo "release-created=false" >> $GITHUB_OUTPUT
+          echo "release-exists=false" >> $GITHUB_OUTPUT
         else
           echo "Release found."
-          echo "release-created=true" >> $GITHUB_OUTPUT
+          echo "release-exists=true" >> $GITHUB_OUTPUT
         fi
       shell: bash
