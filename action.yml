@@ -1,0 +1,47 @@
+name: Release Existence Action
+author: Roche/Genentech - Insights Engineering
+description: Check if a release for given tag exists
+
+inputs:
+  release-tag:
+    description: |
+      The name of tag for which it should be checked whether the release exists.
+      If not specified, then the current tag is used.
+    required: false
+    default: ""
+outputs:
+  release-exists:
+    description: Whether the release for given tag exists
+    value: ${{ steps.check-if-release-exists.outputs.release-exists }}
+
+branding:
+  icon: 'box'
+  color: 'purple'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Get branch names 🌿
+      id: branch-names
+      uses: tj-actions/branch-names@v6
+
+    - name: Check if release exists 🚀
+      id: check-if-release-exists
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        echo "Current tag = ${{ steps.branch-names.outputs.tag }}"
+        RELEASE_TAG="${{ steps.branch-names.outputs.tag }}"
+        if [[ "${{ inputs.release-tag }}" != "" ]]; then
+          echo "Setting release tag to check to ${{ inputs.release-tag }}"
+          RELEASE_TAG="${{ inputs.release-tag }}"
+        fi
+        set +e
+        if [[ "$(gh release view $RELEASE_TAG 2>&1)" == "release not found" ]]; then
+          echo "Release not found."
+          echo "release-exists=false" >> $GITHUB_OUTPUT
+        else
+          echo "Release found."
+          echo "release-exists=true" >> $GITHUB_OUTPUT
+        fi
+      shell: bash
