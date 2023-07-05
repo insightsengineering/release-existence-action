@@ -4,7 +4,9 @@ description: Check if a release for given tag exists
 
 inputs:
   release-tag:
-    description: The name of tag for which it should be checked whether the release exists
+    description: |
+      The name of tag for which it should be checked whether the release exists.
+      If not specified, then the current tag is used.
     required: false
     default: ""
 outputs:
