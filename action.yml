@@ -23,7 +23,7 @@ runs:
   steps:
     - name: Get branch names 🌿
       id: branch-names
-      uses: tj-actions/branch-names@v6
+      uses: tj-actions/branch-names@2e5354c6733793113f416314375826df030ada23 # v6
 
     - name: Check if release exists 🚀
       id: check-if-release-exists
